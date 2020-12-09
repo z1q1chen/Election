@@ -4,6 +4,10 @@ import { Layout, Menu,
 import './Layout.css';
 import React, { useEffect, useState } from "react";
 import {BrowserRouter as Router, Link,Route} from 'react-router-dom';
+// import elections from './elections'
+import pieChart from './pieChart'
+import choices from './choices'
+import elections from './electionsTry'
 
 const { Header, Content, Footer } = Layout;
 
@@ -43,7 +47,8 @@ function App() {
              */}
 
             <Route path="/admin" render={()=>(<div>admin</div>)}></Route>
-            <Route path="/election" render={()=>(<div>election</div>)}></Route>
+            {/* <Route path="/election" render={()=>(<div>election</div>)}></Route> */}
+            <Route path="/election" component={elections}></Route>
             </Content>
             <Footer style={{ textAlign: 'center' }}>Election Dapp</Footer>
     </Router>
