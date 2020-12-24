@@ -2,8 +2,9 @@ import { Layout, Menu,
     // Breadcrumb 
 } from 'antd';
 import './Layout.css';
+import Admin from './Admin'
 import React, { useEffect, useState } from "react";
-import {BrowserRouter as Router, Link,Route} from 'react-router-dom';
+import {BrowserRouter as Router, Link,Route, NavLink} from 'react-router-dom';
 
 const { Header, Content, Footer } = Layout;
 
@@ -16,13 +17,17 @@ function App() {
             
             <div className="logo" />
             <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
-                <Menu.Item key="1"><Link to="admin">Admin</Link></Menu.Item>
-                <Menu.Item key="2"><Link to="election">Election</Link></Menu.Item>
+                <Menu.Item key="2"><Link to="admin">Admin</Link></Menu.Item>
+                <Menu.Item key="3"><Link to="election">Election</Link></Menu.Item>
                 {/* <Menu.Item key="3">nav 3</Menu.Item> */}
             </Menu>
             
             </Header>
-            <Content style={{ padding: '0 50px' }}>
+            
+            <Content style={{ width: '70%', padding: '0 50px', minHeight: '500px' }}>
+            &nbsp;
+            &nbsp;
+            &nbsp;
             {/* <Breadcrumb style={{ margin: '16px 0' }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>List</Breadcrumb.Item>
@@ -42,7 +47,7 @@ function App() {
             7. election_id: uid
              */}
 
-            <Route path="/admin" render={()=>(<div>admin</div>)}></Route>
+            <Route path="/admin" component={Admin}/>
             <Route path="/election" render={()=>(<div>election</div>)}></Route>
             </Content>
             <Footer style={{ textAlign: 'center' }}>Election Dapp</Footer>
