@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 
-import { Form, Input, Button, Space, Layout, Menu } from 'antd';
+import { Form, Input, Button, Space, Layout, Menu, Typography } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { DatePicker } from 'antd';
 
+const { Title } = Typography;
+
 const { RangePicker } = DatePicker;
 
-const { Content } = Layout;
+const { Header, Content } = Layout;
 
 const rangeConfig = {
   rules: [{ type: 'array', required: true, message: 'Please select time!' }],
@@ -35,7 +37,9 @@ class Admin extends Component {
   render() {
     return (
       <Layout>
-  
+          <Title>Create an election:</Title>
+          &nbsp;
+          &nbsp;
           <Content style={{ padding: '0 24px' }}>
           
           <Form name="create_election" onFinish={this.onFinish} autoComplete="off" ref={this.formRef}>
