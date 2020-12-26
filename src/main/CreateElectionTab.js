@@ -1,0 +1,125 @@
+import React, { Component } from "react";
+
+import { Form, Input, Button, Space, Layout, Typography } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { DatePicker } from "antd";
+
+const { Title } = Typography;
+
+const { RangePicker } = DatePicker;
+
+const { Content } = Layout;
+
+const rangeConfig = {
+  rules: [{ type: "array", required: true, message: "Please select time!" }],
+};
+
+class CreateElectionTab extends Component {
+  formRef = React.createRef();
+
+  onReset = () => {
+    this.formRef.current.resetFields();
+  };
+
+  onFinish = (values) => {
+    console.log("Received values of form:", values);
+    this.onReset();
+    // this.state.dvideo.methods.postComment(this.state.currentVideo.id, this.state.value)
+    //   .send({ from: this.state.account }).on('transactionHash', (hash) => {
+    //     // reset comment state
+    //     this.resetState()
+    //     // reset video state
+    //     this.props.resetState()
+    //     this.props.loadBlockchainData()
+    // })
+  };
+
+  render() {
+    return (
+      <Layout>
+        <Title>Create an election:</Title>
+        &nbsp; &nbsp;
+        <Content style={{ padding: "0 24px" }}>
+          <Form
+            name="create_election"
+            onFinish={this.onFinish}
+            autoComplete="off"
+            ref={this.formRef}
+          >
+            <Form.Item
+              name="election_title"
+              label="Title"
+              rules={[{ required: true, message: "Missing area" }]}
+              style={{ paddingBottom: "30px" }}
+            >
+              <Input placeholder="Title" />
+            </Form.Item>
+
+            <Form.Item
+              name="election_description"
+              label="Description"
+              rules={[{ required: true, message: "Missing area" }]}
+              style={{ paddingBottom: "30px" }}
+            >
+              <Input.TextArea />
+            </Form.Item>
+
+            <Form.Item
+              name="election_time"
+              label="Time"
+              {...rangeConfig}
+              style={{ paddingBottom: "30px" }}
+            >
+              <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+            </Form.Item>
+
+            <Form.List name="Candidates" style={{ paddingBottom: "30px" }}>
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field) => (
+                    <Space
+                      key={field.key}
+                      style={{ display: "flex", marginBottom: 8 }}
+                      align="baseline"
+                    >
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "Candidate"]}
+                        label="Candidate"
+                        fieldKey={[field.fieldKey, "Candidate"]}
+                        rules={[
+                          { required: true, message: "Missing candidate" },
+                        ]}
+                      >
+                        <Input placeholder="Candidate" />
+                      </Form.Item>
+
+                      <MinusCircleOutlined onClick={() => remove(field.name)} />
+                    </Space>
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Add candidate
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </Content>
+      </Layout>
+    );
+  }
+}
+
+export default CreateElectionTab;
