@@ -1,7 +1,6 @@
-import { Table, Space, Button, Tabs, Typography } from "antd";
+import { Table, Space, Button, Tabs } from "antd";
 import React from "react";
-
-const { Title, Paragraph } = Typography;
+import Election from "./Election.js";
 
 const { Column } = Table;
 
@@ -14,9 +13,9 @@ const dataSource = [
     description: "Demo a",
     endtime: "2020-12-31",
     candidates: [
-      { key: "1", name: "1" },
-      { key: "2", name: "2" },
-      { key: "3", name: "3" },
+      { key: "1", name: "1", votes: 10, total: 70 },
+      { key: "2", name: "2", votes: 20, total: 70 },
+      { key: "3", name: "3", votes: 40, total: 70 },
     ],
   },
   {
@@ -25,9 +24,9 @@ const dataSource = [
     description: "Demo b",
     endtime: "2020-12-31",
     candidates: [
-      { key: "1", name: "1" },
-      { key: "2", name: "2" },
-      { key: "3", name: "3" },
+      { key: "1", name: "1", votes: 10, total: 70 },
+      { key: "2", name: "2", votes: 20, total: 70 },
+      { key: "3", name: "3", votes: 40, total: 70 },
     ],
   },
   {
@@ -36,9 +35,9 @@ const dataSource = [
     description: "Demo c",
     endtime: "2020-12-31",
     candidates: [
-      { key: "1", name: "1" },
-      { key: "2", name: "2" },
-      { key: "3", name: "3" },
+      { key: "1", name: "1", votes: 10, total: 70 },
+      { key: "2", name: "2", votes: 20, total: 70 },
+      { key: "3", name: "3", votes: 40, total: 70 },
     ],
   },
 ];
@@ -103,42 +102,13 @@ class ElectionTab extends React.Component {
     this[action](targetKey);
   };
 
-  vote = (record) => {
-    console.log("voted " + record.name);
-  };
   add = (record) => {
     const { panes } = this.state;
     const activeKey = `newTab${this.newTabIndex++}`;
     const newPanes = [...panes];
     newPanes.push({
       title: record.title,
-      content: (
-        <Typography>
-          <Title>{record.title}</Title>
-          <Paragraph>{record.description}</Paragraph>
-          <Paragraph>End Time: {record.endtime}</Paragraph>
-          <Paragraph>
-            <Table dataSource={record.candidates}>
-              <Column title="Candidates" dataIndex="name" key="name" />
-              <Column
-                title="Action"
-                key="action"
-                render={(record) => (
-                  <Space size="middle">
-                    <Button
-                      type="primary"
-                      ghost
-                      onClick={() => this.vote(record)}
-                    >
-                      Vote
-                    </Button>
-                  </Space>
-                )}
-              />
-            </Table>
-          </Paragraph>
-        </Typography>
-      ),
+      content: <Election record={record}></Election>,
       key: activeKey,
       closable: true,
     });
