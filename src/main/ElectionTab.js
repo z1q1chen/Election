@@ -1,6 +1,8 @@
 import { Table, Space, Button, Tabs } from "antd";
 import React from "react";
 
+const { Column } = Table;
+
 const { TabPane } = Tabs;
 
 const dataSource = [
@@ -8,19 +10,19 @@ const dataSource = [
     key: "1",
     title: "a",
     description: "Demo a",
-    enddate: "2020-12-31",
+    endtime: "2020-12-31",
   },
   {
     key: "2",
     title: "b",
     description: "Demo b",
-    enddate: "2020-12-31",
+    endtime: "2020-12-31",
   },
   {
     key: "3",
     title: "c",
     description: "Demo c",
-    enddate: "2020-12-31",
+    endtime: "2020-12-31",
   },
 ];
 
@@ -42,21 +44,56 @@ const columns = [
   },
 ];
 
-const initialPanes = [
-  {
-    title: "Home",
-    content: <Table dataSource={dataSource} columns={columns} />,
-    key: "1",
-    closable: false,
-  },
-];
+// const initialPanes = [
+//   {
+//     title: "Home",
+//     content: <Table dataSource={dataSource} columns={columns} />,
+//     key: "1",
+//     closable: false,
+//   },
+// ];
 
 class ElectionTab extends React.Component {
   newTabIndex = 0;
 
+  openTab = (record) => {
+    console.log("hi");
+    console.log(record.title);
+  };
+
+  initialPanes = [
+    {
+      title: "Home",
+      content: (
+        <Table dataSource={dataSource}>
+          <Column title="Title" dataIndex="title" key="title" />
+          <Column
+            title="Description"
+            dataIndex="description"
+            key="description"
+          />
+          <Column title="End Time" dataIndex="endtime" key="endtime" />
+          <Column
+            title="Action"
+            key="action"
+            render={(text, record) => (
+              <Space size="middle">
+                <Button type="primary" ghost onClick={() => this.add(record)}>
+                  Participate
+                </Button>
+              </Space>
+            )}
+          />
+        </Table>
+      ),
+      key: "1",
+      closable: false,
+    },
+  ];
+
   state = {
-    activeKey: initialPanes[0].key,
-    panes: initialPanes,
+    activeKey: this.initialPanes[0].key,
+    panes: this.initialPanes,
   };
 
   onChange = (activeKey) => {
@@ -67,14 +104,15 @@ class ElectionTab extends React.Component {
     this[action](targetKey);
   };
 
-  add = () => {
+  add = (record) => {
     const { panes } = this.state;
     const activeKey = `newTab${this.newTabIndex++}`;
     const newPanes = [...panes];
     newPanes.push({
-      title: "New Tab",
-      content: "Content of new Tab",
+      title: record.title,
+      content: record.description,
       key: activeKey,
+      closable: true,
     });
     this.setState({
       panes: newPanes,
@@ -112,6 +150,7 @@ class ElectionTab extends React.Component {
         hideAdd
         type="editable-card"
         onChange={this.onChange}
+        onEdit={this.onEdit}
         activeKey={activeKey}
       >
         {panes.map((pane) => (
