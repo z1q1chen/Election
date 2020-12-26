@@ -1,5 +1,7 @@
-import { Table, Space, Button, Tabs } from "antd";
+import { Table, Space, Button, Tabs, Typography } from "antd";
 import React from "react";
+
+const { Title, Paragraph } = Typography;
 
 const { Column } = Table;
 
@@ -11,36 +13,33 @@ const dataSource = [
     title: "a",
     description: "Demo a",
     endtime: "2020-12-31",
+    candidates: [
+      { key: "1", name: "1" },
+      { key: "2", name: "2" },
+      { key: "3", name: "3" },
+    ],
   },
   {
     key: "2",
     title: "b",
     description: "Demo b",
     endtime: "2020-12-31",
+    candidates: [
+      { key: "1", name: "1" },
+      { key: "2", name: "2" },
+      { key: "3", name: "3" },
+    ],
   },
   {
     key: "3",
     title: "c",
     description: "Demo c",
     endtime: "2020-12-31",
-  },
-];
-
-const columns = [
-  {
-    title: "Title",
-    dataIndex: "title",
-    key: "title",
-  },
-  {
-    title: "Description",
-    dataIndex: "description",
-    key: "description",
-  },
-  {
-    title: "EndDate",
-    dataIndex: "enddate",
-    key: "enddate",
+    candidates: [
+      { key: "1", name: "1" },
+      { key: "2", name: "2" },
+      { key: "3", name: "3" },
+    ],
   },
 ];
 
@@ -104,13 +103,42 @@ class ElectionTab extends React.Component {
     this[action](targetKey);
   };
 
+  vote = (record) => {
+    console.log("voted " + record.name);
+  };
   add = (record) => {
     const { panes } = this.state;
     const activeKey = `newTab${this.newTabIndex++}`;
     const newPanes = [...panes];
     newPanes.push({
       title: record.title,
-      content: record.description,
+      content: (
+        <Typography>
+          <Title>{record.title}</Title>
+          <Paragraph>{record.description}</Paragraph>
+          <Paragraph>End Time: {record.endtime}</Paragraph>
+          <Paragraph>
+            <Table dataSource={record.candidates}>
+              <Column title="Candidates" dataIndex="name" key="name" />
+              <Column
+                title="Action"
+                key="action"
+                render={(record) => (
+                  <Space size="middle">
+                    <Button
+                      type="primary"
+                      ghost
+                      onClick={() => this.vote(record)}
+                    >
+                      Vote
+                    </Button>
+                  </Space>
+                )}
+              />
+            </Table>
+          </Paragraph>
+        </Typography>
+      ),
       key: activeKey,
       closable: true,
     });
