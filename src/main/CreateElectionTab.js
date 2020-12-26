@@ -66,12 +66,17 @@ class CreateElectionTab extends Component {
 
     const candidates = election.candidates
     //convert array of candidate names(str) to array of bytes32
-    const candidates_byte = candidates.map(candidate => Web3.utils.asciiToHex(candidate.name))
-    console.log(candidates_byte)
+    const candidates_byte = candidates.map(candidate => Web3.utils.fromAscii(candidate.name))
     
-    //create election
+    //create the election
     const receipt = await this.state.elections_contract.methods.create_election(title, description, end_time, candidates_byte)
                         .send({ from: this.state.account })
+    if(!receipt || !receipt.status){
+      message.error("Submission failed! Please refresh the page and try again.")
+    } else {
+      message.success("Election submitted!")
+    }
+
 
   }
 
