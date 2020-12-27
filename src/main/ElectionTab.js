@@ -10,115 +10,25 @@ const { Column } = Table;
 
 const { TabPane } = Tabs;
 
-var electionsData = [{
-  key: "1",
-    title: "a",
-    description: "Demo a",
-    endtime: "2020-12-31",
-    candidates: [
-      { key: "1", name: "1", votes: 10, total: 70 },
-      { key: "2", name: "2", votes: 20, total: 70 },
-      { key: "3", name: "3", votes: 40, total: 70 },
-    ],
-},]
-// const dataSource = [
-//   {
-//     key: "1",
-//     title: "a",
-//     description: "Demo a",
-//     endtime: "2020-12-31",
-//     candidates: [
-//       { key: "1", name: "1", votes: 10, total: 70 },
-//       { key: "2", name: "2", votes: 20, total: 70 },
-//       { key: "3", name: "3", votes: 40, total: 70 },
-//     ],
-//   },
-//   {
-//     key: "2",
-//     title: "b",
-//     description: "Demo b",
-//     endtime: "2020-12-31",
-//     candidates: [
-//       { key: "1", name: "1", votes: 10, total: 70 },
-//       { key: "2", name: "2", votes: 20, total: 70 },
-//       { key: "3", name: "3", votes: 40, total: 70 },
-//     ],
-//   },
-//   {
-//     key: "2",
-//     title: "c",
-//     description: "Demo c",
-//     endtime: "2020-12-31",
-//     candidates: [
-//       { key: "1", name: "1", votes: 10, total: 70 },
-//       { key: "2", name: "2", votes: 20, total: 70 },
-//       { key: "3", name: "3", votes: 40, total: 70 },
-//     ],
-//   },
-// ];
-
-// const initialPanes = [
-//   {
-//     title: "Home",
-//     content: <Table dataSource={dataSource} columns={columns} />,
-//     key: "1",
-//     closable: false,
-//   },
-// ];
 
 class ElectionTab extends React.Component {
   newTabIndex = 0;
-  // elections_contract = null;
-  // account = '';
-  // jsonData = null;
-  initialPanes = [
-    {
-      title: "Home",
-      content: (
-        <Table dataSource={electionsData}>
-          <Column title="Title" dataIndex="title" key="title" />
-          <Column
-            title="Description"
-            dataIndex="description"
-            key="description"
-          />
-          <Column title="End Time" dataIndex="endtime" key="endtime" />
-          <Column
-            title="Action"
-            key="action"
-            render={(text, record) => (
-              <Space size="middle">
-                <Button type="primary" ghost onClick={() => this.add(record)}>
-                  Participate
-                </Button>
-              </Space>
-            )}
-          />
-        </Table>
-      ),
-      key: "1",
-      closable: false,
-    },
-  ];
 
-  // state = {
-  //   activeKey: this.initialPanes[0].key,
-  //   panes: this.initialPanes,
-  //   account: '',
-  //   elections_contract: null,
-  // };
 
   constructor(props)  {
     super(props)
     this.state={
       activeKey:null,
-      panes: [],
+      panes: null,
       account: '',
-      elections_contract: null
+      elections_data: [],
+      elections_contract: []
     }
-    await this.loadWeb3()
-    await this.loadBlockchainData()
+    this.loadWeb3()
+    this.loadBlockchainData()
   }
+
+
 
   async loadWeb3() {
     if (window.ethereum) {
@@ -133,23 +43,56 @@ class ElectionTab extends React.Component {
     }
   }
 
+  updatePanes() {
+    console.log(this.state.elections_data)
+    this.initialPanes = [
+      {
+        title: "Home",
+        content: (
+          <Table dataSource={this.state.elections_data}>
+            <Column title="Title" dataIndex="title" key="title" />
+            <Column
+              title="Description"
+              dataIndex="description"
+              key="description"
+            />
+            <Column title="End Time" dataIndex="endtime" key="endtime" />
+            <Column
+              title="Action"
+              key="action"
+              render={(text, record) => (
+                <Space size="middle">
+                  <Button type="primary" ghost onClick={() => this.add(record)}>
+                    Participate
+                  </Button>
+                </Space>
+              )}
+            />
+          </Table>
+        ),
+        key: "1",
+        closable: false,
+      },
+    ];
+    this.setState({activeKey: this.initialPanes[0].key, panes: this.initialPanes}, () => {
+      console.log(this.state)
+    })
+    
+  }
   loadBlockchainData = async () => {
     const web3 = window.web3
     // Load account
     const accounts = await web3.eth.getAccounts()
+    
     this.setState({ account: accounts[0] })
-    this.account = accounts[0];
     // Network ID
     const networkId = await web3.eth.net.getId()
     const networkData = Elections.networks[networkId]
     if(networkData) {
       const elections_contract = new web3.eth.Contract(Elections.abi, networkData.address)
-      this.setState({ elections_contract: elections_contract })
-      console.log("election contract")
-      console.log(this.state.elections_contract)
-      // this.loadJson();
-      var token = await this.state.elections_contract.methods.getElection().call();
-      console.log(token)
+      this.setState({ elections_contract: elections_contract }, () => {
+        this.loadJson();
+      })
     }
     
   }
@@ -175,16 +118,19 @@ class ElectionTab extends React.Component {
           { key: "3", name: "3", votes: 40, total: 70 },
         ],
     }
-    electionsData.push(oneElection);
+    this.setState({elections_data: [...this.state.elections_data, oneElection]})
+    console.log(this.state.elections_data)
+    this.updatePanes()
+    // electionsData.push(oneElection);
     // this.jsonData = JSON.stringify(electionsData);
 
-    let dataStr = JSON.stringify(electionsData);
-    let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    let exportFileDefaultName = 'data.json';
-    let linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
+    // let dataStr = JSON.stringify(electionsData);
+    // let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    // let exportFileDefaultName = 'data.json';
+    // let linkElement = document.createElement('a');
+    // linkElement.setAttribute('href', dataUri);
+    // linkElement.setAttribute('download', exportFileDefaultName);
+    // linkElement.click();
 
   }
 
@@ -245,6 +191,7 @@ class ElectionTab extends React.Component {
   };
 
   render() {
+    console.log(this.state)
     const { panes, activeKey } = this.state;
     return (
       <Tabs
@@ -254,7 +201,7 @@ class ElectionTab extends React.Component {
         onEdit={this.onEdit}
         activeKey={activeKey}
       >
-        {panes.map((pane) => (
+        {panes && panes.map((pane) => (
           <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
             {pane.content}
           </TabPane>
