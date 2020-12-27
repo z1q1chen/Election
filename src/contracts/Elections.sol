@@ -5,6 +5,9 @@ contract Elections {
     uint public election_count = 0;
     string public name = "Elections";
     mapping(uint => Election) public elections;
+    bytes32[] defaultArray;
+    bytes32 test = stringToBytes32("aaa");
+    
 
     struct Election {
         uint id;
@@ -22,6 +25,27 @@ contract Elections {
         uint id;
         bytes32 name;
         uint vote_count;
+    } 
+
+    constructor () public {
+        defaultArray.push(test);
+        create_election("Default Election", "default description", 
+        "20201231", defaultArray);
+    }
+
+    function stringToBytes32(string memory source) public pure returns (bytes32 result) {
+        bytes memory tempEmptyStringTest = bytes(source);
+        if (tempEmptyStringTest.length == 0) {
+            return 0x0;
+        }
+
+        assembly {
+            result := mload(add(source, 32))
+        }
+    }
+
+    function getElection() public returns (uint , string memory, string memory, string memory, uint ) {
+        return (elections[0].id, elections[0].title, elections[0].description, elections[0].end_time, elections[0].candidate_count);
     }
 
     event ElectionCreated (

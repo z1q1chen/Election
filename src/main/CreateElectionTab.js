@@ -67,6 +67,7 @@ class CreateElectionTab extends Component {
     const candidates = election.candidates
     //convert array of candidate names(str) to array of bytes32
     const candidates_byte = candidates.map(candidate => Web3.utils.fromAscii(candidate.name))
+    console.log(candidates_byte);
     
     //create the election
     const receipt = await this.state.elections_contract.methods.create_election(title, description, end_time, candidates_byte)
