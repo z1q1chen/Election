@@ -17,7 +17,7 @@ function App() {
       <Router>
         <Header>
           <div className="logo" />
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
+          <Menu theme="dark" mode="horizontal">
             <Menu.Item key="2">
               <Link to="admin">Admin</Link>
             </Menu.Item>
