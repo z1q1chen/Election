@@ -108,7 +108,8 @@ class ElectionTab extends React.Component {
       for (var j = 0; j < oneElectionData[4]; j++) {
         var candidateData = await this.state.elections_contract.methods.getCandidate(i, j).call();
         var str = window.web3.utils.toAscii(candidateData[1]);
-        let oneCandidateObj = { name: str, votes: candidateData[2], total: 0};
+        // let oneCandidateObj = { name: str, votes: candidateData[2], total: 0};
+        let oneCandidateObj = { name: str};
         candidateObj.push(oneCandidateObj);
         console.log(candidateObj)
       }
