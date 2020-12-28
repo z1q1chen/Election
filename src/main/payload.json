@@ -1,35 +1,35 @@
 [
-        {
-            "title":"a",
-            "description": "demo a",
-            "start_date":"",
-            "end_date": "",
-            "candidates":[
-                "candidate 1",
-                "candidate 2",
-                "candidate 3"
-            ]
-        },
-        {
-            "title":"b",
-            "description": "demo a",
-            "start_date":"",
-            "end_date": "",
-            "candidates":[
-                "candidate 1",
-                "candidate 2",
-                "candidate 3"
-            ]
-        },
-        {
-            "title":"c",
-            "description": "demo a",
-            "start_date":"",
-            "end_date": "",
-            "candidates":[
-                "candidate 1",
-                "candidate 2",
-                "candidate 3"
-            ]
-        }
-    ]
+    {
+      "key": "1",
+      "title": "a",
+      "description": "Demo a",
+      "endtime": "2020-12-31",
+      "candidates": [
+        { "key": "1", "name": "1", "votes": 10, "total": 70 },
+        { "key": "2", "name": "2", "votes": 20, "total": 70 },
+        { "key": "3", "name": "3", "votes": 40, "total": 70 }
+      ]
+    },
+    {
+        "key": "2",
+        "title": "b",
+        "description": "Demo b",
+        "endtime": "2020-12-31",
+        "candidates": [
+          { "key": "1", "name": "1", "votes": 10, "total": 70 },
+          { "key": "2", "name": "2", "votes": 20, "total": 70 },
+          { "key": "3", "name": "3", "votes": 40, "total": 70 }
+        ]
+      },
+      {
+        "key": "3",
+        "title": "c",
+        "description": "Demo c",
+        "endtime": "2020-12-31",
+        "candidates": [
+          { "key": "1", "name": "1", "votes": 10, "total": 70 },
+          { "key": "2", "name": "2", "votes": 20, "total": 70 },
+          { "key": "3", "name": "3", "votes": 40, "total": 70 }
+        ]
+      }
+  ]
