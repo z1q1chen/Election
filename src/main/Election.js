@@ -110,6 +110,7 @@ class Election extends React.Component {
     }
   }
 
+
   vote = async (CandidateRecord) => {
     if (this.state.elections_contract) {
       // Vote by election id and candidate id
@@ -118,6 +119,7 @@ class Election extends React.Component {
         this.setState({ voted: true });
         localStorage.setItem(this.localstoragekey, true);
         this.update();
+        this.props.resetState()
       });
     }
   };
@@ -140,6 +142,7 @@ class Election extends React.Component {
     this.setState({ record: oneElection })
   }
 
+
   render() {
     return (
       <Typography>
@@ -159,6 +162,7 @@ class Election extends React.Component {
                     percent={Math.round(
                       (CandidateRecord.votes / this.state.total) * 100
                     )}
+                    status="normal"
                   />
                 )}
               />

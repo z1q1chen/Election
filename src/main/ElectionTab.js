@@ -118,45 +118,20 @@ class ElectionTab extends React.Component {
       this.setState({elections_data: [...this.state.elections_data, oneElection]})   
     }
     this.updatePanes()
-
-    // var token = await this.elections_contract.methods.elections[0].call().call();
-    // var token = await this.state.elections_contract.methods.getElection().call();
-    // console.log(String(token[0]))
-    // console.log(String(token[1]))
-    // console.log(String(token[2]))
-    // var token2 = await this.elections_contract.methods.getCandidate().call();
-
-    // let oneElection = {
-    //   key: token[0],
-    //     title: String(token[1]),
-    //     description: String(token[2]),
-    //     endtime: String(token[3]),
-    //     candidates: [
-    //       { name: "1", votes: 10, total: 70 },
-    //       { name: "2", votes: 20, total: 70 },
-    //       { name: "3", votes: 40, total: 70 },
-    //     ],
-    // }
-    // this.setState({elections_data: [...this.state.elections_data, oneElection]})
-    // console.log(this.state.elections_data)
-    // this.updatePanes()
-
-    // electionsData.push(oneElection);
-    // this.jsonData = JSON.stringify(electionsData);
-    // let dataStr = JSON.stringify(electionsData);
-    // let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    // let exportFileDefaultName = 'data.json';
-    // let linkElement = document.createElement('a');
-    // linkElement.setAttribute('href', dataUri);
-    // linkElement.setAttribute('download', exportFileDefaultName);
-    // linkElement.click();
-
   }
 
-  // openTab = (record) => {
-  //   console.log("hi");
-  //   console.log(record.title);
-  // };
+  resetState = () => {
+    this.setState({
+      activeKey:null,
+      panes: null,
+      account: '',
+      elections_data: [],
+      elections_contract: [],
+      candidates_data: [],
+    }, ()=>{
+      this.loadBlockchainData()
+    })
+  }
 
   onChange = (activeKey) => {
     this.setState({ activeKey: activeKey });
@@ -172,7 +147,7 @@ class ElectionTab extends React.Component {
     const newPanes = [...panes];
     newPanes.push({
       title: record.title,
-      content: <Election record={record}></Election>,
+      content: <Election record={record} resetState={this.resetState}></Election>,
       key: activeKey,
       closable: true,
     });
