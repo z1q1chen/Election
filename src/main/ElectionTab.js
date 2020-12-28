@@ -3,8 +3,6 @@ import React from "react";
 import Election from "./Election.js";
 import Elections from '../abis/Elections.json'
 import Web3 from 'web3'
-import payload from './payload.json'
-import { Components } from "antd/lib/date-picker/generatePicker";
 
 const { Column } = Table;
 
@@ -50,6 +48,7 @@ class ElectionTab extends React.Component {
         title: "Home",
         content: (
           <Table dataSource={this.state.elections_data}>
+            <Column title="Id" dataIndex="key" key="key" />
             <Column title="Title" dataIndex="title" key="title" />
             <Column
               title="Description"
@@ -104,10 +103,9 @@ class ElectionTab extends React.Component {
       var oneElectionData = await this.state.elections_contract.methods.getElection(i).call();
       for (var j = 0; j < oneElectionData[4]; j++) {
         var candidateData = await this.state.elections_contract.methods.getCandidate(i, j).call();
-        console.log(candidateData);
         // var str = window.web3.utils.toAscii(candidateData[1]);
         // let oneCandidateObj = { name: str, votes: candidateData[2], total: 0};
-        let oneCandidateObj = { name: candidateData[1]};
+        let oneCandidateObj = { key:candidateData[0], name: candidateData[1], votes: candidateData[2]};
         candidateObj.push(oneCandidateObj);
       }
       let oneElection = {
@@ -155,13 +153,13 @@ class ElectionTab extends React.Component {
 
   }
 
-  openTab = (record) => {
-    console.log("hi");
-    console.log(record.title);
-  };
+  // openTab = (record) => {
+  //   console.log("hi");
+  //   console.log(record.title);
+  // };
 
   onChange = (activeKey) => {
-    this.setState({ activeKey });
+    this.setState({ activeKey: activeKey });
   };
 
   onEdit = (targetKey, action) => {
@@ -180,7 +178,7 @@ class ElectionTab extends React.Component {
     });
     this.setState({
       panes: newPanes,
-      activeKey,
+      activeKey: activeKey,
     });
   };
 

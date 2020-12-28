@@ -53,7 +53,7 @@ class CreateElectionTab extends Component {
     const networkData = Elections.networks[networkId]
     if(networkData) {
       const elections_contract = new web3.eth.Contract(Elections.abi, networkData.address)
-      this.setState({ elections_contract })
+      this.setState({ elections_contract: elections_contract })
       }
       
   }
@@ -67,7 +67,6 @@ class CreateElectionTab extends Component {
     const candidates = election.candidates
     //convert array of candidate names(str) to array of bytes32
     const candidates_byte = candidates.map(candidate => candidate.name)
-    console.log(candidates_byte);
     
     //create the election
     const receipt = await this.state.elections_contract.methods.create_election(title, description, end_time, candidates_byte)
@@ -77,8 +76,6 @@ class CreateElectionTab extends Component {
     } else {
       message.success("Election submitted!")
     }
-
-
   }
 
   onReset = () => {
@@ -86,7 +83,6 @@ class CreateElectionTab extends Component {
   };
 
   onFinish = values => {
-    console.log('Received values of form:', values);
     if (!values.candidates){
       message.error('An election requires at least one candidate!');
     } else if (values.candidates.length >= 32){

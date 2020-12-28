@@ -6,7 +6,6 @@ contract Elections {
     string public name = "Elections";
     mapping(uint => Election) public elections;
     string[] defaultArray;
-    string test = "aaa";
     
 
     struct Election {
@@ -28,20 +27,14 @@ contract Elections {
     } 
 
     constructor () public {
-        defaultArray.push(test);
+        defaultArray.push("test candidate a");
+        defaultArray.push("test candidate b");
+        defaultArray.push("test candidate c");
         create_election("Default Election", "default description", 
         "20201231", defaultArray);
-    }
-
-    function stringToBytes32(string memory source) public pure returns (bytes32 result) {
-        bytes memory tempEmptyStringTest = bytes(source);
-        if (tempEmptyStringTest.length == 0) {
-            return 0x0;
-        }
-
-        assembly {
-            result := mload(add(source, 32))
-        }
+        elections[0].candidates[0].vote_count += 100;
+        elections[0].candidates[1].vote_count += 60;
+        elections[0].candidates[2].vote_count += 120;
     }
 
     function getElection(uint index) public returns (uint, string memory, string memory, string memory, uint) {
@@ -51,6 +44,23 @@ contract Elections {
     function getCandidate(uint indexE, uint indexC) public returns (uint, string memory, uint) {
         return (elections[indexE].candidates[indexC].id, elections[indexE].candidates[indexC].name, elections[indexE].candidates[indexC].vote_count);
     }
+
+    function vote(uint electionId, uint candidateId) public {
+        require(!elections[electionId].voters[msg.sender]);
+        require(candidateId > 0 && candidateId <= elections[electionId].candidate_count);
+        elections[electionId].candidates[candidateId].vote_count ++;
+        elections[electionId].voters[msg.sender] = true;
+        emit VotedEvent(electionId, candidateId);
+    }
+
+    function check_voted(uint electionIndex) public returns (bool){
+        return elections[electionIndex].voters[msg.sender];
+    }
+
+    event VotedEvent(
+        uint electionId,
+        uint candidateId
+    );
 
     event ElectionCreated (
         uint id,
@@ -92,28 +102,4 @@ contract Elections {
             election_count ++;
 
     }
-
-    // // voted event
-    // event VotedEvent (
-    //     uint indexed _candidateId
-    // );
-
-
-    // function vote (uint _candidateId) public {
-    //     // require that they haven't voted before
-    //     require(!voters[msg.sender]);
-
-    //     // require a valid candidate
-    //     require(_candidateId > 0 && _candidateId <= candidatesCount);
-
-    //     // record that voter has voted
-    //     voters[msg.sender] = true;
-
-    //     // update candidate vote Count
-    //     candidates[_candidateId].voteCount ++;
-
-    //     // trigger voted event
-    //     emit VotedEvent(_candidateId);
-    // }
-
 }
