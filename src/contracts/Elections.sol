@@ -47,7 +47,7 @@ contract Elections {
 
     function vote(uint electionId, uint candidateId) public {
         require(!elections[electionId].voters[msg.sender]);
-        require(candidateId > 0 && candidateId <= elections[electionId].candidate_count);
+        require(candidateId >= 0 && candidateId <= elections[electionId].candidate_count);
         elections[electionId].candidates[candidateId].vote_count ++;
         elections[electionId].voters[msg.sender] = true;
         emit VotedEvent(electionId, candidateId);
