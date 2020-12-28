@@ -20,7 +20,7 @@ truffle compile
 truffle migrate
 ```
 
-### Start app
+# Start app
 ``` 
 npm run start
 ```
