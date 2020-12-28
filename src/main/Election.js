@@ -3,6 +3,7 @@ import React from "react";
 import { Progress } from "antd";
 import Elections from '../abis/Elections.json'
 import Web3 from 'web3'
+import moment from 'moment'
 
 // Init typography and table
 const { Title, Paragraph } = Typography;
@@ -51,6 +52,7 @@ class Election extends React.Component {
     this.state = {
       total: total,
       voted: false,
+      ended: false,
       hide: true,
       account: '',
       elections_contract: [],
@@ -96,7 +98,14 @@ class Election extends React.Component {
       // Get contract, set state
       const elections_contract = new web3.eth.Contract(Elections.abi, networkData.address)
       this.setState({ elections_contract: elections_contract }, () => {
-        this.setState({ hide: false })
+        const end_time = moment(this.state.record.endtime, "dddd, MMMM Do YYYY, h:mm:ss a")
+        const current_time = moment()
+        if (current_time.isBefore(end_time)){
+          this.setState({ hide: false })
+        } else {
+          // The election is ended
+          this.setState({ hide: true, ended: true, record: {...this.state.record, endtime: "The election is ended."} })
+        }
       })
     }
   }
@@ -140,7 +149,7 @@ class Election extends React.Component {
         <Paragraph>
           <Table dataSource={this.state.record.candidates}>
             <Column title="Candidates" dataIndex="name" key="name" />
-            {this.state.voted ? (
+            {this.state.voted || this.state.ended? (
               <Column
                 title="Result"
                 key="result"
