@@ -1,12 +1,12 @@
-pragma solidity 0.5.16;
+pragma experimental ABIEncoderV2;
 
 contract Elections {
 
     uint public election_count = 0;
     string public name = "Elections";
     mapping(uint => Election) public elections;
-    bytes32[] defaultArray;
-    bytes32 test = stringToBytes32("aaa");
+    string[] defaultArray;
+    string test = "aaa";
     
 
     struct Election {
@@ -23,7 +23,7 @@ contract Elections {
     // Model a Candidate
     struct Candidate {
         uint id;
-        bytes32 name;
+        string name;
         uint vote_count;
     } 
 
@@ -48,7 +48,7 @@ contract Elections {
         return (elections[index].id, elections[index].title, elections[index].description, elections[index].end_time, elections[index].candidate_count);
     }
 
-    function getCandidate(uint indexE, uint indexC) public returns (uint, bytes32, uint) {
+    function getCandidate(uint indexE, uint indexC) public returns (uint, string memory, uint) {
         return (elections[indexE].candidates[indexC].id, elections[indexE].candidates[indexC].name, elections[indexE].candidates[indexC].vote_count);
     }
 
@@ -61,7 +61,7 @@ contract Elections {
     );
 
     function create_election(string memory title, string memory description, 
-        string memory end_time, bytes32[] memory candidates) public {
+        string memory end_time, string[] memory candidates) public {
             // Make sure election title exists
             require(bytes(title).length > 0);
             // Make sure creater address exists

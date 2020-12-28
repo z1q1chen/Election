@@ -45,7 +45,6 @@ class ElectionTab extends React.Component {
   }
 
   updatePanes() {
-    console.log(this.state.elections_data)
     this.initialPanes = [
       {
         title: "Home",
@@ -75,9 +74,7 @@ class ElectionTab extends React.Component {
         closable: false,
       },
     ];
-    this.setState({activeKey: this.initialPanes[0].key, panes: this.initialPanes}, () => {
-      console.log(this.state)
-    })
+    this.setState({activeKey: this.initialPanes[0].key, panes: this.initialPanes})
     
   }
   loadBlockchainData = async () => {
@@ -107,11 +104,11 @@ class ElectionTab extends React.Component {
       var oneElectionData = await this.state.elections_contract.methods.getElection(i).call();
       for (var j = 0; j < oneElectionData[4]; j++) {
         var candidateData = await this.state.elections_contract.methods.getCandidate(i, j).call();
-        var str = window.web3.utils.toAscii(candidateData[1]);
+        console.log(candidateData);
+        // var str = window.web3.utils.toAscii(candidateData[1]);
         // let oneCandidateObj = { name: str, votes: candidateData[2], total: 0};
-        let oneCandidateObj = { name: str};
+        let oneCandidateObj = { name: candidateData[1]};
         candidateObj.push(oneCandidateObj);
-        console.log(candidateObj)
       }
       let oneElection = {
         key: oneElectionData[0],
@@ -120,8 +117,7 @@ class ElectionTab extends React.Component {
         endtime: String(oneElectionData[3]),
         candidates: candidateObj,   
       }
-      this.setState({elections_data: [...this.state.elections_data, oneElection]})
-      console.log(this.state.elections_data)     
+      this.setState({elections_data: [...this.state.elections_data, oneElection]})   
     }
     this.updatePanes()
 
@@ -212,7 +208,6 @@ class ElectionTab extends React.Component {
   };
 
   render() {
-    console.log(this.state)
     const { panes, activeKey } = this.state;
     return (
       <Tabs
