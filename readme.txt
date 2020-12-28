@@ -8,4 +8,16 @@ Ganache version: 2.5.4
 
 Please open a terminal at the folder of this project, make sure you have installed npm, nodejs, truffle, lite-server, Ganache and Metamask.
 
-First, run "truffle compile". Then run "truffle migrate". Finally, run "npm run start". Once the program starts, you can go to tab 'Admin' to create a new election to add to the system, or go to tab 'Election' to vote and view results.
+1. setup:
+
+npm install
+truffle compile
+truffle migrate
+
+2. run:
+npm run start
+or
+yarn start
+
+
+Once the program starts, you can go to tab 'Admin' to create a new election to add to the system, or go to tab 'Election' to vote and view results.
