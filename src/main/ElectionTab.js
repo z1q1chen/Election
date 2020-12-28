@@ -42,14 +42,6 @@ const dataSource = [
   },
 ];
 
-// const initialPanes = [
-//   {
-//     title: "Home",
-//     content: <Table dataSource={dataSource} columns={columns} />,
-//     key: "1",
-//     closable: false,
-//   },
-// ];
 
 class ElectionTab extends React.Component {
   newTabIndex = 0;
