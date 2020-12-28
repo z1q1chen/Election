@@ -24,7 +24,6 @@ function App() {
             <Menu.Item key="3">
               <Link to="election">Election</Link>
             </Menu.Item>
-            {/* <Menu.Item key="3">nav 3</Menu.Item> */}
           </Menu>
         </Header>
 
@@ -32,23 +31,6 @@ function App() {
           style={{ width: "70%", padding: "0 50px", minHeight: "500px" }}
         >
           &nbsp; &nbsp; &nbsp;
-          {/* <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>Home</Breadcrumb.Item>
-                <Breadcrumb.Item>List</Breadcrumb.Item>
-                <Breadcrumb.Item>App</Breadcrumb.Item>
-            </Breadcrumb> */}
-          {/* 
-            /admin + election
-            1. election_title: string
-            2. description: string
-            3. candidates: struct {candidate_name, vote_count}
-            4. ending_time: date
-
-            /election
-            5. ended: boolean
-            6. deleted: boolean
-            7. election_id: uid
-             */}
           <Route path="/admin" component={AdminTab} />
           <Route path="/election" component={ElectionTab}></Route>
         </Content>

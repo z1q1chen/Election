@@ -95,7 +95,6 @@ class ElectionTab extends React.Component {
   }
 
   loadJson = async () => {
-    // const token = await this.elections_contract.methods.getElection().send({from: this.account});
     var election_count = await this.state.elections_contract.methods.election_count.call().call();
     var i;
     for (i = 0; i < election_count; i++) {
@@ -103,8 +102,6 @@ class ElectionTab extends React.Component {
       var oneElectionData = await this.state.elections_contract.methods.getElection(i).call();
       for (var j = 0; j < oneElectionData[4]; j++) {
         var candidateData = await this.state.elections_contract.methods.getCandidate(i, j).call();
-        // var str = window.web3.utils.toAscii(candidateData[1]);
-        // let oneCandidateObj = { name: str, votes: candidateData[2], total: 0};
         let oneCandidateObj = { key:candidateData[0], name: candidateData[1], votes: candidateData[2]};
         candidateObj.push(oneCandidateObj);
       }
