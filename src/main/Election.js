@@ -1,9 +1,10 @@
 import { Table, Space, Button, Typography } from "antd";
 import React from "react";
 import { Progress } from "antd";
-// import { Pie, yuan } from "ant-design-pro/lib/Charts";
-// import { MiniProgress } from "ant-design-pro/lib/Charts";
+import Elections from '../abis/Elections.json'
+import Web3 from 'web3'
 
+// Init typography and table
 const { Title, Paragraph } = Typography;
 const { Column } = Table;
 
@@ -35,27 +36,109 @@ const { Column } = Table;
 // ];
 
 class Election extends React.Component {
-  voted = localStorage.getItem("voted" + this.props.record.key) || 0;
+  // Used to verify if user has already voted
+  localstoragekey = null
 
-  state = {
-    voted: this.voted,
+  constructor(props) {
+    super(props)
+
+    // Count total votes, to show percentage later
+    var total = 0
+    this.props.record.candidates.forEach(e => {
+      total += +e.votes
+    })
+
+    this.state = {
+      total: total,
+      voted: false,
+      hide: true,
+      account: '',
+      elections_contract: [],
+      record: this.props.record
+    }
+
+    this.loadWeb3()
+    this.loadBlockchainData()
+  }
+
+  // Load web3
+  async loadWeb3() {
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum)
+      await window.ethereum.enable()
+    }
+    else if (window.web3) {
+      window.web3 = new Web3(window.web3.currentProvider)
+    }
+    else {
+      window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+    }
+  }
+
+  // load blockchain data
+  loadBlockchainData = async () => {
+    const web3 = window.web3
+    // Load account
+    const accounts = await web3.eth.getAccounts()
+
+    this.setState({ account: accounts[0] })
+
+    // Set localstorage key
+    this.localstoragekey = "voted" + this.props.record.key + accounts[0];
+    const voted = localStorage.getItem(this.localstoragekey) || 0;
+    this.setState({ voted: voted })
+    // Network ID
+    const networkId = await web3.eth.net.getId()
+    // Network Data
+    const networkData = Elections.networks[networkId]
+    // Proceed if network exists
+    if (networkData) {
+      // Get contract, set state
+      const elections_contract = new web3.eth.Contract(Elections.abi, networkData.address)
+      this.setState({ elections_contract: elections_contract }, () => {
+        this.setState({ hide: false })
+      })
+    }
+  }
+
+  vote = async (CandidateRecord) => {
+    if (this.state.elections_contract) {
+      // Vote by election id and candidate id
+      this.state.elections_contract.methods.vote(this.props.record.key, CandidateRecord.key).send({ from: this.state.account }).then(() => {
+        // Set voted to true in state and localstorage
+        this.setState({ voted: true });
+        localStorage.setItem(this.localstoragekey, true);
+        this.update();
+      });
+    }
   };
 
-  vote = (CandidateRecord) => {
-    localStorage.setItem("voted" + this.props.record.key, 1);
-    this.setState({ voted: true });
-    console.log("voted " + CandidateRecord.name);
-  };
-  
+  update = async () => {
+    var oneElectionData = await this.state.elections_contract.methods.getElection(this.props.record.key).call();
+    var candidateObj = [];
+    for (var j = 0; j < oneElectionData[4]; j++) {
+      var candidateData = await this.state.elections_contract.methods.getCandidate(this.props.record.key, j).call();
+      let oneCandidateObj = { key: candidateData[0], name: candidateData[1], votes: candidateData[2] };
+      candidateObj.push(oneCandidateObj);
+    }
+    let oneElection = {
+      key: oneElectionData[0],
+      title: String(oneElectionData[1]),
+      description: String(oneElectionData[2]),
+      endtime: String(oneElectionData[3]),
+      candidates: candidateObj,
+    }
+    this.setState({ record: oneElection })
+  }
 
   render() {
     return (
       <Typography>
-        <Title>{this.props.record.title}</Title>
-        <Paragraph>{this.props.record.description}</Paragraph>
-        <Paragraph>End Time: {this.props.record.endtime}</Paragraph>
+        <Title>{this.state.record.title}</Title>
+        <Paragraph>{this.state.record.description}</Paragraph>
+        <Paragraph>End Time: {this.state.record.endtime}</Paragraph>
         <Paragraph>
-          <Table dataSource={this.props.record.candidates}>
+          <Table dataSource={this.state.record.candidates}>
             <Column title="Candidates" dataIndex="name" key="name" />
             {this.state.voted ? (
               <Column
@@ -65,28 +148,29 @@ class Election extends React.Component {
                   <Progress
                     strokeLinecap="square"
                     percent={Math.round(
-                      (CandidateRecord.votes / CandidateRecord.total) * 100
+                      (CandidateRecord.votes / this.state.total) * 100
                     )}
                   />
                 )}
               />
             ) : (
-              <Column
-                title="Action"
-                key="action"
-                render={(CandidateRecord) => (
-                  <Space size="middle">
-                    <Button
-                      type="primary"
-                      ghost
-                      onClick={() => this.vote(CandidateRecord)}
-                    >
-                      Vote
+                <Column
+                  title="Action"
+                  key="action"
+                  render={(CandidateRecord) => (
+                    <Space size="middle">
+                      <Button
+                        type="primary"
+                        ghost
+                        hidden={this.state.hide}
+                        onClick={() => this.vote(CandidateRecord)}
+                      >
+                        Vote
                     </Button>
-                  </Space>
-                )}
-              />
-            )}
+                    </Space>
+                  )}
+                />
+              )}
           </Table>
         </Paragraph>
       </Typography>
@@ -106,8 +190,8 @@ class Election extends React.Component {
       //   valueFormat={val => <span dangerouslySetInnerHTML={{ __html: yuan(val) }} />}
       //   height={294}
       // />
-  );
-    
+    );
+
   }
 }
 
