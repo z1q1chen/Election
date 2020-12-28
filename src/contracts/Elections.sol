@@ -5,7 +5,6 @@ contract Elections {
     uint public election_count = 0;
     string public name = "Elections";
     mapping(uint => Election) public elections;
-    string[] defaultArray;
     
 
     struct Election {
@@ -25,17 +24,6 @@ contract Elections {
         string name;
         uint vote_count;
     } 
-
-    constructor () public {
-        defaultArray.push("test candidate a");
-        defaultArray.push("test candidate b");
-        defaultArray.push("test candidate c");
-        create_election("Default Election", "default description", 
-        "20201231", defaultArray);
-        elections[0].candidates[0].vote_count += 100;
-        elections[0].candidates[1].vote_count += 60;
-        elections[0].candidates[2].vote_count += 120;
-    }
 
     function getElection(uint index) public returns (uint, string memory, string memory, string memory, uint) {
         return (elections[index].id, elections[index].title, elections[index].description, elections[index].end_time, elections[index].candidate_count);
