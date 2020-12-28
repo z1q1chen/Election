@@ -22,7 +22,8 @@ class ElectionTab extends React.Component {
       panes: null,
       account: '',
       elections_data: [],
-      elections_contract: []
+      elections_contract: [],
+      candidates_data: [],
     }
     this.loadWeb3()
     this.loadBlockchainData()
@@ -99,31 +100,54 @@ class ElectionTab extends React.Component {
 
   loadJson = async () => {
     // const token = await this.elections_contract.methods.getElection().send({from: this.account});
-    // var token = await this.elections_contract.methods.election_count.call().call();
+    var election_count = await this.state.elections_contract.methods.election_count.call().call();
+    var i;
+    for (i = 0; i < election_count; i++) {
+      var candidateObj = [];
+      var oneElectionData = await this.state.elections_contract.methods.getElection(i).call();
+      for (var j = 0; j < oneElectionData[4]; j++) {
+        var candidateData = await this.state.elections_contract.methods.getCandidate(i, j).call();
+        var str = window.web3.utils.toAscii(candidateData[1]);
+        let oneCandidateObj = { name: str, votes: candidateData[2], total: 0};
+        candidateObj.push(oneCandidateObj);
+        console.log(candidateObj)
+      }
+      let oneElection = {
+        key: oneElectionData[0],
+        title: String(oneElectionData[1]),
+        description: String(oneElectionData[2]),
+        endtime: String(oneElectionData[3]),
+        candidates: candidateObj,   
+      }
+      this.setState({elections_data: [...this.state.elections_data, oneElection]})
+      console.log(this.state.elections_data)     
+    }
+    this.updatePanes()
+
     // var token = await this.elections_contract.methods.elections[0].call().call();
-    var token = await this.state.elections_contract.methods.getElection().call();
-    console.log(String(token[0]))
-    console.log(String(token[1]))
-    console.log(String(token[2]))
+    // var token = await this.state.elections_contract.methods.getElection().call();
+    // console.log(String(token[0]))
+    // console.log(String(token[1]))
+    // console.log(String(token[2]))
     // var token2 = await this.elections_contract.methods.getCandidate().call();
 
-    let oneElection = {
-      key: "2",
-        title: String(token[1]),
-        description: String(token[2]),
-        endtime: String(token[3]),
-        candidates: [
-          { key: "1", name: "1", votes: 10, total: 70 },
-          { key: "2", name: "2", votes: 20, total: 70 },
-          { key: "3", name: "3", votes: 40, total: 70 },
-        ],
-    }
-    this.setState({elections_data: [...this.state.elections_data, oneElection]})
-    console.log(this.state.elections_data)
-    this.updatePanes()
+    // let oneElection = {
+    //   key: token[0],
+    //     title: String(token[1]),
+    //     description: String(token[2]),
+    //     endtime: String(token[3]),
+    //     candidates: [
+    //       { name: "1", votes: 10, total: 70 },
+    //       { name: "2", votes: 20, total: 70 },
+    //       { name: "3", votes: 40, total: 70 },
+    //     ],
+    // }
+    // this.setState({elections_data: [...this.state.elections_data, oneElection]})
+    // console.log(this.state.elections_data)
+    // this.updatePanes()
+
     // electionsData.push(oneElection);
     // this.jsonData = JSON.stringify(electionsData);
-
     // let dataStr = JSON.stringify(electionsData);
     // let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
     // let exportFileDefaultName = 'data.json';
@@ -134,14 +158,10 @@ class ElectionTab extends React.Component {
 
   }
 
-  
-
   openTab = (record) => {
     console.log("hi");
     console.log(record.title);
   };
-
-  
 
   onChange = (activeKey) => {
     this.setState({ activeKey });

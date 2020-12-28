@@ -44,8 +44,12 @@ contract Elections {
         }
     }
 
-    function getElection() public returns (uint , string memory, string memory, string memory, uint ) {
-        return (elections[0].id, elections[0].title, elections[0].description, elections[0].end_time, elections[0].candidate_count);
+    function getElection(uint index) public returns (uint, string memory, string memory, string memory, uint) {
+        return (elections[index].id, elections[index].title, elections[index].description, elections[index].end_time, elections[index].candidate_count);
+    }
+
+    function getCandidate(uint indexE, uint indexC) public returns (uint, bytes32, uint) {
+        return (elections[indexE].candidates[indexC].id, elections[indexE].candidates[indexC].name, elections[indexE].candidates[indexC].vote_count);
     }
 
     event ElectionCreated (
