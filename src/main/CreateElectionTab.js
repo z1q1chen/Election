@@ -83,7 +83,6 @@ class CreateElectionTab extends Component {
   };
 
   onFinish = values => {
-    console.log(values)
     if (!values.candidates || values.candidates.length<=0){
       message.error('An election requires at least one candidate!');
     } else if (values.candidates.length >= 32){
