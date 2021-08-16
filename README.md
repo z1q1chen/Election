@@ -103,3 +103,7 @@ yarn start
 # Use the app
 
 you can go to tab 'Admin' to create a new election to add to the system, or go to tab 'Election' to vote and view results.
+
+Create election
+
+![img](https://raw.githubusercontent.com/jackychencw/election/main/imgs/create_election.png)
