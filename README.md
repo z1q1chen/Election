@@ -1,4 +1,4 @@
-![video](https://zc-video-demo.s3.us-east-2.amazonaws.com/demo.mov)
+[![video]({https://raw.githubusercontent.com/jackychencw/Election/main/imgs/metamask-create-password.png})]({https://zc-video-demo.s3.us-east-2.amazonaws.com/demo.mov} "demo")
 # Versions:
 
 1. Node.js version: v14.15.0,
